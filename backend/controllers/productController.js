@@ -3,12 +3,14 @@ const productModel = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ApiFeatures = require("../utils/apiFeatures");
+const userModel = require("../models/userModel");
 
 // create product --Admin
 
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 
   req.body.user = req.user.id;
+  console.log(req.body.user);
   
   const product = await productModel.create(req.body);
 
@@ -20,20 +22,38 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 
 // update the product --Admin
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
-  // console.log(req.params.id)
-  // console.log(req.body)
-  let product = await productModel.findById(req.params.id);
+  try {
+    // Find the product by ID
+    let product = await productModel.findById(req.params.id);
 
-  if (!product) {
-    return next(new ErrorHandler("Product not Found", 404));
+    if (!product) {
+      return next(new ErrorHandler("Product not Found", 404));
+    }
+
+    // Update the product and await the result
+    product = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+
+    // Check if the product was updated successfully
+    if (!product) {
+      return next(new ErrorHandler("Product not Found", 404));
+    }
+
+    // Respond with a success message and the updated product
+    res.status(200).json({
+      success: true,
+      message: "Updated Successfully!",
+      product,
+    });
+  } catch (error) {
+    // Handle any errors that occur during execution
+    next(error);
   }
-
-  product = productModel.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  });
 });
+
 
 // get all products  --Public
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
@@ -84,3 +104,4 @@ exports.getSingleProduct = catchAsyncErrors(async (req, res, next) => {
 
   });
 });
+
