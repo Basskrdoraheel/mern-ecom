@@ -1,4 +1,4 @@
-const { red } = require("colors");
+
 const productModel = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
@@ -7,6 +7,9 @@ const ApiFeatures = require("../utils/apiFeatures");
 // create product --Admin
 
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
+
+  req.body.user = req.user.id;
+  
   const product = await productModel.create(req.body);
 
   res.status(201).json({
@@ -35,7 +38,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 // get all products  --Public
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const resultPerPage = 5;
-  const productCount = await productModel.countDocuments();
+  const productsCount = await productModel.countDocuments();
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()
     .filter()
@@ -48,7 +51,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     products,
-    productCount
+    productsCount
+    
   });
 });
 // delete the product  --Admin
@@ -76,5 +80,7 @@ exports.getSingleProduct = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     product,
+    
+
   });
 });
