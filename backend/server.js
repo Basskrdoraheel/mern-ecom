@@ -10,6 +10,7 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
+dotenv.config({path:"backend/config/config.env"})
 
 const port = process.env.PORT || 4000;
 
