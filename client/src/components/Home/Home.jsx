@@ -1,27 +1,34 @@
 import React, { useEffect } from "react";
 import { CgMouse } from "react-icons/cg";
 import "./Home.css";
-import Products from "./Products";
+import ProductCard from "./ProductCard";
 import MetaData from "../layout/MetaData";
-import {useDispatch} from "react-redux";
-import { getProducts } from "../../Actions/productAction";
-
-const product={
-  name: "Blue T-shirt",
-  images:[{url:"https://i.ibb.co/DRST11n/1.webp"}],
-  price:"$150",
-  _id:"raheel"
-}
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrors, getProducts } from "../../Actions/productAction";
+import Loader from "../layout/Loader/Loader"
+import {useAlert} from "react-alert"
 
 const Home = () => {
+  const alert = useAlert()
   const dispatch = useDispatch();
-  
-  useEffect(()=>{
-    dispatch(getProducts())
-  },[dispatch])
+  const { loading, error, products, productsCount } = useSelector(
+    (state) => state.products
+  );
+
+  useEffect(() => {
+    if(error){
+      alert.error(error)
+      dispatch(clearErrors())
+    }
+    dispatch(getProducts());
+  }, [dispatch,error,alert]);
+
   return (
     <>
-    <MetaData title={"Ecommerce"}/>
+    {loading ? (<Loader /> ):(
+      <>
+    
+      <MetaData title={"Ecommerce"} />
       <div className="banner">
         <p>Welcome to Ecommerce</p>
         <h1>FIND AMAZING PRODUCTS BELOW</h1>
@@ -36,15 +43,14 @@ const Home = () => {
       <h2 className="homeHeading">Featured Products</h2>
 
       <div className="container" id="container">
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>
-        <Products products={product}/>    
+      <div className="container" id="container">
+     {products && products.map((product)=>(
+      <ProductCard key={product._id} product={product}/>
+     ))}
+</div>
       </div>
+    </>
+    )}
     </>
   );
 };

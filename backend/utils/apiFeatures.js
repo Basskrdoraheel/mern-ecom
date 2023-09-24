@@ -23,7 +23,7 @@ filter(){
     // console.log(queryCopy);
     // Removing some fields
 
-    const removeFields = ["keywors","page","limit"];
+    const removeFields = ["keyword","page","limit"];
     removeFields.forEach((field)=>{delete queryCopy[field]});
     
     // filter for price and rating
