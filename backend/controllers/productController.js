@@ -1,17 +1,14 @@
-
 const productModel = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ApiFeatures = require("../utils/apiFeatures");
 
-
 // create product --Admin
 
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
-
   req.body.user = req.user.id;
   console.log(req.body.user);
-  
+
   const product = await productModel.create(req.body);
 
   res.status(201).json({
@@ -54,11 +51,13 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-
 // get all products  --Public
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
- 
   const resultPerPage = 8;
+  console.log(
+    "🚀 ~ file: productController.js:62 ~ exports.getAllProducts=catchAsyncErrors ~ resultPerPage:",
+    resultPerPage
+  );
   const productsCount = await productModel.countDocuments();
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()
@@ -73,8 +72,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     success: true,
     products,
     productsCount,
-    resultPerPage
-    
+    resultPerPage,
   });
 });
 // delete the product  --Admin
@@ -102,56 +100,52 @@ exports.getSingleProduct = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     product,
-    
-
   });
 });
 
 // create review and update the review
-exports.createReview = catchAsyncErrors(async (req, res, next)=>{
-
-  const {rating,comment,productId} = req.body
+exports.createReview = catchAsyncErrors(async (req, res, next) => {
+  const { rating, comment, productId } = req.body;
 
   const review = {
-    id : req.user._id ,
+    id: req.user._id,
     name: req.user.name,
-    rating:Number(rating),
-    comment
-  }
+    rating: Number(rating),
+    comment,
+  };
 
   const product = await productModel.findById(productId);
-  if(!product){
-    return next(new ErrorHandler("Product Not Exsist",401))
+  if (!product) {
+    return next(new ErrorHandler("Product Not Exsist", 401));
   }
-  
-  const isReviewed = product.reviews.find(rev => rev.user.toString() === req.user._id.toString());
 
-  if(isReviewed){
-    
-    product.reviews.forEach((rev)=>{
-      if( rev.user.toString()===rev.user._id.toString()){
+  const isReviewed = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id.toString()
+  );
+
+  if (isReviewed) {
+    product.reviews.forEach((rev) => {
+      if (rev.user.toString() === rev.user._id.toString()) {
         rev.rating = rating;
-        rev.comment=comment;
+        rev.comment = comment;
       }
-    })
-  } else{
-    product.reviews.push(review)
-    product.numOfReviews = product.reviews.length
+    });
+  } else {
+    product.reviews.push(review);
+    product.numOfReviews = product.reviews.length;
   }
 
-  let avg =0;
-  product.ratings = product.reviews.forEach((rev)=>{
-    avg+=rev.rating
-  })
-  product.ratings = avg/product.reviews.length;
+  let avg = 0;
+  product.ratings = product.reviews.forEach((rev) => {
+    avg += rev.rating;
+  });
+  product.ratings = avg / product.reviews.length;
 
-
-  await product.save({validateBeforeSave:false});
+  await product.save({ validateBeforeSave: false });
 
   res.status(200).json({
-    success:true,
-
-  })
+    success: true,
+  });
 });
 
 // Get All Reviews of a product
@@ -214,4 +208,3 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
     success: true,
   });
 });
-
