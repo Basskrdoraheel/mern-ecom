@@ -54,10 +54,6 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 // get all products  --Public
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const resultPerPage = 8;
-  console.log(
-    "🚀 ~ file: productController.js:62 ~ exports.getAllProducts=catchAsyncErrors ~ resultPerPage:",
-    resultPerPage
-  );
   const productsCount = await productModel.countDocuments();
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()

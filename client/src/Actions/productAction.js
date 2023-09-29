@@ -17,9 +17,7 @@ export const getProducts =
       dispatch({
         type: ALL_PRODUCT_REQUEST,
       });
-      // let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
-      let link = `/api/v1/products`;
-      console.log("🚀 ~ file: productAction.js:21 ~ getProducts ~ data:");
+      let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
       const { data } = await request.get(link);
 
       dispatch({
