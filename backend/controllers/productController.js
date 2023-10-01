@@ -55,22 +55,26 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const resultPerPage = 8;
   const productsCount = await productModel.countDocuments();
+
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
-    .search()
-    .filter()
-    .pagination(resultPerPage);
-  const products = await apiFeature.query;
-  if (!products) {
-    return next(new ErrorHandler("Product not Found", 404));
-  }
+  .search()
+  .filter()
+  .pagination(resultPerPage)
+
+const products = await apiFeature.query;
+
+const filteredProductsCount = products.length;
+
 
   res.status(200).json({
     success: true,
     products,
     productsCount,
     resultPerPage,
+    filteredProductsCount,
   });
 });
+
 // delete the product  --Admin
 exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
   let product = await productModel.findById(req.params.id);

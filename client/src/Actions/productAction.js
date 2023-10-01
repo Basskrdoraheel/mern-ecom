@@ -7,18 +7,22 @@ import {
   PRODUCT_DETAILS_REQUEST,
   CLEAR_ERROR,
 } from "../Constants/productConstants";
-import axios from "axios";
 import request from "../utils/requests";
 
 export const getProducts =
-  (keyword = " ", currentPage = 1) =>
+  (keyword = "", currentPage = 1, price = [0, 25000],category,rating=0) =>
   async (dispatch) => {
     try {
       dispatch({
         type: ALL_PRODUCT_REQUEST,
       });
-      let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
+      let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${rating}`;
+
+      if(category){
+        link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${rating}`;
+      }
       const { data } = await request.get(link);
+      console.log(data)
 
       dispatch({
         type: ALL_PRODUCT_SUCCESS,
@@ -38,7 +42,7 @@ export const getProductDetails = (id) => async (dispatch) => {
       type: PRODUCT_DETAILS_REQUEST,
     });
 
-    const { data } = await axios.get(`/api/v1/product/${id}`);
+    const { data } = await request.get(`/api/v1/product/${id}`);
 
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
