@@ -2,6 +2,7 @@ const app = require('./app');
 const dotenv = require('dotenv');
 const { cyan, red } = require('colors');
 const connectDB = require('./config/dataBase');
+const cloudinary = require("cloudinary")
 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -16,6 +17,12 @@ const port = process.env.PORT || 4000;
 
 // Connecting to the database
 connectDB();
+
+cloudinary.config({
+cloud_name: process.env.CLOUDINARY_NAME,
+api_key: process.env.API_KEY,
+secret_key: process.env.SECRET_KEY
+})
 
 
 

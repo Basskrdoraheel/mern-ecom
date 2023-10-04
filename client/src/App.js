@@ -14,6 +14,7 @@ import Search from "./components/product/Search";
 import { useEffect } from "react";
 import {Routes,Route} from "react-router-dom";
 import webFont from "webfontloader";
+import LoginSignUp from "./components/User/LoginSignUp";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
       <Route path="/products" element={<Products/>} />
       <Route path="/products/:keyword" element={<Products/>} />
       <Route path="/search" element={<Search/>} />
+      <Route path="/login" element={<LoginSignUp/>} />
       
       </Routes>
       <Footer/>
