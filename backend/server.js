@@ -2,7 +2,7 @@ const app = require('./app');
 const dotenv = require('dotenv');
 const { cyan, red } = require('colors');
 const connectDB = require('./config/dataBase');
-const cloudinary = require("cloudinary")
+const cloudinary = require("cloudinary").v2;
 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -21,8 +21,10 @@ connectDB();
 cloudinary.config({
 cloud_name: process.env.CLOUDINARY_NAME,
 api_key: process.env.API_KEY,
-secret_key: process.env.SECRET_KEY
+secret_key: process.env.SECRET_KEY,
+secure: true
 })
+// console.log(cloudinary.config())
 
 
 

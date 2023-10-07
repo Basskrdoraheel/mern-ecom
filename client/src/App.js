@@ -6,7 +6,7 @@ import Home from "./components/Home/Home"
 import ProductDetails from "./components/product/ProductDetails";
 import Products from "./components/product/Products";
 import Search from "./components/product/Search";
-
+import store from "./Store"
 
 
 
@@ -15,19 +15,28 @@ import { useEffect } from "react";
 import {Routes,Route} from "react-router-dom";
 import webFont from "webfontloader";
 import LoginSignUp from "./components/User/LoginSignUp";
+import { loadUser } from "./Actions/userAction";
+import UserOptions from "./components/layout/Header/UserOptions";
+import { useSelector } from "react-redux";
 
 
 function App() {
+
+  const {isAuthenticated, user} = useSelector((state)=>state.user);
+
   useEffect(()=>{
     webFont.load({
       google:{
         families:["Roboto","Driod Sans","Chilanka"]
       }
     })
+    store.dispatch(loadUser());
   },[])
   return (
     <>
       <Header/>
+
+      {isAuthenticated && <UserOptions user={user}/>}
       <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/product/:id" element={<ProductDetails/>} />
