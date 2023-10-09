@@ -50,7 +50,7 @@ const Products = () => {
   };
 
   let count = filterProductsCount;
-  console.log(count)
+ 
 
   return (
     <>

@@ -22,7 +22,6 @@ export const getProducts =
         link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${rating}`;
       }
       const { data } = await request.get(link);
-      console.log(data)
 
       dispatch({
         type: ALL_PRODUCT_SUCCESS,

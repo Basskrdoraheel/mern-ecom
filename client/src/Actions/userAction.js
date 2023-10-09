@@ -25,6 +25,7 @@ export const login = (email,password)=> async(dispatch)=>{
             {email,password},
             config
         )
+        console.log(data)
         dispatch({
             type:LOGIN_SUCCESS,
             payload:data.user
@@ -70,7 +71,7 @@ export const loadUser = () => async (dispatch) => {
   }
 };
 
-// logout
+// logout User
 export const logout =()=>async(dispatch)=>{
   try {
 
