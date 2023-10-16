@@ -136,7 +136,7 @@ export const forgotPassword = (email) => async (dispatch) => {
 
     const { data } = await request.post(
       "/api/v1/password/forgot",
-      { email: email },
+      email,
       config
     );
 

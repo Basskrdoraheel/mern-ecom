@@ -69,26 +69,17 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
 
 // Forgot Password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
-  console.log(
-    "🚀 ~ file: userController.js:74 ~ exports.forgotPassword=catchAsyncErrors ~ req.body :",
-    req.body
-  );
-  const user = await userModel.findOne({ email: req.body.email });
 
-  console.log(
-    "🚀 ~ file: userController.js:78 ~ exports.forgotPassword=catchAsyncErrors ~ user:",
-    user
-  );
+  const user = await userModel.findOne(req.body);
+  
+
 
   if (!user) {
     return next(new ErrorHandler("User Not found with this email", 404));
   }
   // Get reset password token
   const resetToken = user.getResetPasswordToken();
-  console.log(
-    "🚀 ~ file: userController.js:85 ~ exports.forgotPassword=catchAsyncErrors ~ resetToken:",
-    resetToken
-  );
+  
   // console.log(resetToken)
 
   await user.save({ validateBeforeSave: false });
