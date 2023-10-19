@@ -23,10 +23,7 @@ const ForgotPassword = () => {
     const myForm = new FormData();
 
     myForm.set("email", email);
-    console.log('🤪 ~ file: ForgotPassword.jsx:25 [] -> myForm : ', myForm)
-    console.log('🤪 ~ file: ForgotPassword.jsx:25 [] -> email : ', email)
-
-    dispatch(forgotPassword({"email": email}));
+    dispatch(forgotPassword({ email: email }));
     console.log("Form submitted");
   };
 

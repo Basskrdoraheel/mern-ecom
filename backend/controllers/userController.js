@@ -69,24 +69,16 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
 
 // Forgot Password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
-
   const user = await userModel.findOne(req.body);
-  
-
 
   if (!user) {
     return next(new ErrorHandler("User Not found with this email", 404));
   }
-  // Get reset password token
   const resetToken = user.getResetPasswordToken();
-  
-  // console.log(resetToken)
 
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordURL = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/password/reset/${resetToken}`;
+  const resetPasswordURL = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
 
   const message = `Your password reset token is:- \n\n ${resetPasswordURL} \n\n
   If you have not requested this email then,ignore it`;
