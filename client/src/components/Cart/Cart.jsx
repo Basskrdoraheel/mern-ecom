@@ -3,15 +3,14 @@ import CartItemCard from "./CartItemCard";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addItemsToCart } from "../../Actions/cartAction";
+import { addItemsToCart, removeItemsFromCart } from "../../Actions/cartAction";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.cart);
-  console.log("🚀 ~ file: Cart.jsx:9 ~ Cart ~ cartItems:", cartItems);
 
-  const increaseQty = (id, quantity, stock) => {
+  const increaseQuantity = (id, quantity, stock) => {
     const newQty = quantity + 1;
     if (stock <= quantity) {
       return;
@@ -19,7 +18,7 @@ const Cart = () => {
     dispatch(addItemsToCart(id, newQty));
   };
 
-  const descreaseQty = (id, quantity) => {
+  const decreaseQuantity = (id, quantity) => {
     const newQty = quantity - 1;
     if (1 >= quantity) {
       return;
@@ -27,10 +26,13 @@ const Cart = () => {
     dispatch(addItemsToCart(id, newQty));
   };
 
-  const checkOutHandler = () => {
-    navigate("/login?redirect=shipping");
+  const deleteCartItems = (id) => {
+    dispatch(removeItemsFromCart(id));
   };
 
+  const checkoutHandler = () => {
+    navigate("/login?redirect=shipping");
+  };
   return (
     <>
       <div className="cartPage">
@@ -42,14 +44,18 @@ const Cart = () => {
 
         {cartItems &&
           cartItems.map((item) => (
-            <div className="cartContainer">
-              <CartItemCard item={item} />
+            <div className="cartContainer" key={item.product}>
+              <CartItemCard item={item} deleteCartItems={deleteCartItems} />
               <div className="cartInput">
-                <button>-</button>
+                <button
+                  onClick={() => decreaseQuantity(item.product, item.quantity)}
+                >
+                  -
+                </button>
                 <input readOnly type="number" value={item.quantity} />
                 <button
                   onClick={() =>
-                    increaseQty(item.product, item.quantity, item.stock)
+                    increaseQuantity(item.product, item.quantity, item.stock)
                   }
                 >
                   +
@@ -66,12 +72,15 @@ const Cart = () => {
           <div>
             <div className="cartGrossTotalBox">
               <p>Grass Total</p>
-              <p>{`$ 600`}</p>
+              <p>{`$ ${cartItems.reduce(
+                (acc, item) => acc + item.quantity * item.price,
+                0
+              )}`}</p>
             </div>
           </div>
           <div></div>
           <div className="checkOutBtn">
-            <button onClick={checkOutHandler}>Check Out</button>
+            <button onClick={() => checkoutHandler()}>Check Out</button>
           </div>
         </div>
       </div>
