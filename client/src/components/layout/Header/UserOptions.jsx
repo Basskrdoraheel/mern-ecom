@@ -8,17 +8,29 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "react-alert";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { logout } from "../../../Actions/userAction";
 const UserOptions = ({ user }) => {
   const alert = useAlert();
   const dispatch = useDispatch();
+  const { cartItems } = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.user);
   const option = [
     { id: 1, icon: <ListAltIcon />, name: "Orders", func: orders },
     { id: 2, icon: <PersonIcon />, name: "Profile", func: account },
-    { id: 3, icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
+    {
+      id: 3,
+      icon: (
+        <ShoppingCartIcon
+          style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
+        />
+      ),
+      name: `Cart(${cartItems.length})`,
+      func: cart,
+    },
+    { id: 4, icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
   ];
 
   if (user.role === "admin") {
@@ -37,6 +49,9 @@ const UserOptions = ({ user }) => {
   }
   function account() {
     navigate("/account");
+  }
+  function cart() {
+    navigate("/cart");
   }
   function logoutUser() {
     dispatch(logout());
@@ -71,6 +86,7 @@ const UserOptions = ({ user }) => {
             tooltipTitle={item.name}
             onClick={item.func}
             key={item.name}
+            tooltipOpen={window.innerWidth <= 600 ? true : false}
           />
         ))}
       </SpeedDial>

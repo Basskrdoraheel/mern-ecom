@@ -12,20 +12,37 @@ import UpdatePassword from "./components/User/UpdatePassword";
 import ForgotPassword from "./components/User/ForgotPassword";
 import ResetPassword from "./components/User/ResetPassword.jsx";
 import Cart from "./components/Cart/Cart";
+import Shipping from "./components/Cart/Shipping.jsx";
+import ConfirmOrder from "./components/Cart/ConfirmOrder.jsx";
 
 import store from "./Store";
 
 // dependencies
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import webFont from "webfontloader";
 import LoginSignUp from "./components/User/LoginSignUp";
 import { loadUser } from "./Actions/userAction";
 import UserOptions from "./components/layout/Header/UserOptions";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import Payment from "./components/Cart/Payment.jsx";
+import { Element } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
+  const [stripeApiKey, setStripeApiKey] = useState("");
+
+  async function getStripeApiKey() {
+    const { data } = await axios.get("/api/v1/stripeapikey");
+
+    setStripeApiKey(data.stripeApiKey);
+    console.log(
+      "🚀 ~ file: App.js:41 ~ getStripeApiKey ~ stripeApiKey:",
+      stripeApiKey
+    );
+  }
 
   useEffect(() => {
     webFont.load({
@@ -34,6 +51,7 @@ function App() {
       },
     });
     store.dispatch(loadUser());
+    getStripeApiKey();
   }, []);
   return (
     <>
@@ -76,6 +94,32 @@ function App() {
         <Route path="/password/forgot" element={<ForgotPassword />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
         <Route path="/cart" element={<Cart />} />
+        <Route
+          path="/login/shipping"
+          element={
+            <ProtectedRoute>
+              <Shipping />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/order/confirm"
+          element={
+            <ProtectedRoute>
+              <ConfirmOrder />
+            </ProtectedRoute>
+          }
+        />
+        <Element stripe={loadStripe(stripeApiKey)}>
+          <Route
+            path="/process/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+        </Element>
       </Routes>
       <Footer />
     </>
