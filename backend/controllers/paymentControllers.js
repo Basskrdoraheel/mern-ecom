@@ -16,5 +16,9 @@ exports.processPayment = catchAsyncError(async (req, res, next) => {
 });
 
 exports.sendStripeApiKey = catchAsyncError(async (req, res, next) => {
-  res.status(200).json({ stripeApiKey: process.env.STRIPE_SECRET_KEY });
+  res.status(200).json({ stripeApiKey: process.env.STRIPE_API_KEY });
+  // console.log(
+  //   "🚀 ~ file: paymentControllers.js:24 ~ exports.sendStripeApiKey=catchAsyncError ~ process.env.STRIPE_API_KEY :",
+  //   process.env.STRIPE_API_KEY
+  // );
 });
