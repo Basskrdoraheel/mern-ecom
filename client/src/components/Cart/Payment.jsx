@@ -59,7 +59,7 @@ const Payment = () => {
         paymentData,
         config
       );
-      console.log("🚀 ~ file: Payment.jsx:51 ~ submitHandler ~ data:", data);
+      // console.log("🚀 ~ file: Payment.jsx:51 ~ submitHandler ~ data:", data);
 
       const client_secret = data.client_secret;
 

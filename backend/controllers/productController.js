@@ -7,7 +7,6 @@ const ApiFeatures = require("../utils/apiFeatures");
 
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
   req.body.user = req.user.id;
-  
 
   const product = await productModel.create(req.body);
 
@@ -57,14 +56,13 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const productsCount = await productModel.countDocuments();
 
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
-  .search()
-  .filter()
-  .pagination(resultPerPage)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
 
-const products = await apiFeature.query;
+  const products = await apiFeature.query;
 
-const filteredProductsCount = products.length;
-
+  const filteredProductsCount = products.length;
 
   res.status(200).json({
     success: true,
@@ -116,17 +114,16 @@ exports.createReview = catchAsyncErrors(async (req, res, next) => {
 
   const product = await productModel.findById(productId);
   if (!product) {
-    return next(new ErrorHandler("Product Not Exsist", 401));
+    return next(new ErrorHandler("Product Not Exist", 401));
   }
 
-  const isReviewed = product.reviews.find(
-    (rev) => rev.user.toString() === req.user._id.toString()
-  );
+  const isReviewed = product.reviews.find((rev) => rev.name === req.user.name);
 
   if (isReviewed) {
+    console.log("Review exists for user:", req.user.name);
     product.reviews.forEach((rev) => {
-      if (rev.user.toString() === rev.user._id.toString()) {
-        rev.rating = rating;
+      if (rev.name === req.user.name) {
+        rev.rating = Number(rating);
         rev.comment = comment;
       }
     });
@@ -136,8 +133,9 @@ exports.createReview = catchAsyncErrors(async (req, res, next) => {
   }
 
   let avg = 0;
-  product.ratings = product.reviews.forEach((rev) => {
+  product.ratings = product.reviews.map((rev) => {
     avg += rev.rating;
+    return rev.rating;
   });
   product.ratings = avg / product.reviews.length;
 

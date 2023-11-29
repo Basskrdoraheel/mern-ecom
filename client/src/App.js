@@ -31,6 +31,8 @@ import Payment from "./components/Cart/Payment.jsx";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import request from "./utils/requests.js";
+import OrderDetails from "./components/Orders/OrderDetails.jsx";
+import Dashboard from "./components/Admin/Dashboard.jsx";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -124,21 +126,36 @@ function App() {
             </ProtectedRoute>
           }
         />
-      </Routes>
-      {stripeApiKey && (
-        <Elements stripe={loadStripe(stripeApiKey)}>
-          <Routes>
-            <Route
-              path="/process/payment"
-              element={
-                <ProtectedRoute>
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {stripeApiKey && (
+          <Route
+            path="/process/payment"
+            element={
+              <ProtectedRoute>
+                <Elements stripe={loadStripe(stripeApiKey)}>
                   <Payment />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Elements>
-      )}
+                </Elements>
+              </ProtectedRoute>
+            }
+          />
+        )}
+      </Routes>
       <Footer />
     </>
   );

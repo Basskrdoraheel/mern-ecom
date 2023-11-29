@@ -5,12 +5,16 @@ import {
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_DETAILS_REQUEST,
+  NEW_REVIEW_REQUEST,
+  NEW_REVIEW_SUCCESS,
+  NEW_REVIEW_FAIL,
+  NEW_REVIEW_RESET,
   CLEAR_ERROR,
 } from "../Constants/productConstants";
 import request from "../utils/requests";
 
 export const getProducts =
-  (keyword = "", currentPage = 1, price = [0, 25000],category,rating=0) =>
+  (keyword = "", currentPage = 1, price = [0, 25000], category, rating = 0) =>
   async (dispatch) => {
     try {
       dispatch({
@@ -18,7 +22,7 @@ export const getProducts =
       });
       let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${rating}`;
 
-      if(category){
+      if (category) {
         link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${rating}`;
       }
       const { data } = await request.get(link);
@@ -50,6 +54,31 @@ export const getProductDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DETAILS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// NEW REVIEW
+
+export const newReview = (reviewData) => async (dispatch) => {
+  try {
+    dispatch({
+      type: NEW_REVIEW_REQUEST,
+    });
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+
+    const { data } = await request.put(`/api/v1/review`, reviewData, config);
+    dispatch({
+      type: NEW_REVIEW_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    console.log("🚀 ~ file: productAction.js:85 ~ newReview ~ error:", error);
+    dispatch({
+      type: NEW_REVIEW_FAIL,
       payload: error.response.data.message,
     });
   }

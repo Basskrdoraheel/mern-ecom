@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
+import MetaData from "../layout/MetaData";
 
 const categories = [
   "Laptop",
@@ -23,7 +24,7 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState([0, 25000]);
   const [category, setCategory] = useState("");
-  const [rating,setRatings]=useState(0)
+  const [rating, setRatings] = useState(0);
 
   const {
     loading,
@@ -32,7 +33,6 @@ const Products = () => {
     products,
     resultPerPage,
     filterProductsCount,
-    
   } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const { keyword } = useParams();
@@ -42,15 +42,14 @@ const Products = () => {
   };
 
   useEffect(() => {
-    dispatch(getProducts(keyword, currentPage, price, category,rating));
-  }, [dispatch, keyword, currentPage, price, category,rating]);
+    dispatch(getProducts(keyword, currentPage, price, category, rating));
+  }, [dispatch, keyword, currentPage, price, category, rating]);
 
   const setCurrentPageNo = (e) => {
     setCurrentPage(e);
   };
 
   let count = filterProductsCount;
- 
 
   return (
     <>
@@ -58,23 +57,27 @@ const Products = () => {
         <Loader />
       ) : (
         <>
+          <MetaData title="PRODUCTS -- ECOMMERCE" />
           <h2 className="productsHeading">Products</h2>
+
           <div className="products">
             {products &&
               products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>
+
           <div className="filterBox">
             <Typography>Price</Typography>
             <Slider
               value={price}
               onChange={priceHandler}
-              min={0}
               valueLabelDisplay="auto"
               aria-labelledby="range-slider"
+              min={0}
               max={25000}
             />
+
             <Typography>Categories</Typography>
             <ul className="categoryBox">
               {categories.map((category) => (
@@ -87,6 +90,7 @@ const Products = () => {
                 </li>
               ))}
             </ul>
+
             <fieldset>
               <Typography component="legend">Ratings Above</Typography>
               <Slider
@@ -94,14 +98,13 @@ const Products = () => {
                 onChange={(e, newRating) => {
                   setRatings(newRating);
                 }}
-                aria-labelledby="continous-slider"
+                aria-labelledby="continuous-slider"
                 valueLabelDisplay="auto"
                 min={0}
                 max={5}
               />
             </fieldset>
           </div>
-
           {resultPerPage < count && (
             <div className="paginationBox">
               <Pagination
@@ -111,7 +114,7 @@ const Products = () => {
                 onChange={setCurrentPageNo}
                 nextPageText="Next"
                 prevPageText="Prev"
-                firstPageText="First"
+                firstPageText="1st"
                 lastPageText="Last"
                 itemClass="page-item"
                 linkClass="page-link"
