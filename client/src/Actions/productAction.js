@@ -111,6 +111,7 @@ export const newReview = (reviewData) => async (dispatch) => {
 // CREATE PRODUCT
 
 export const createProduct = (productData) => async (dispatch) => {
+  console.log("🚀 ~ file: productAction.js:114 ~ createProduct ~ productData:", productData)
   try {
     dispatch({
       type: NEW_PRODUCT_REQUEST,
@@ -119,7 +120,7 @@ export const createProduct = (productData) => async (dispatch) => {
       headers: { "Content-Type": "application/json" },
     };
 
-    const { data } = await request.put(
+    const { data } = await request.post(
       `/api/v1/admin/product/new`,
       productData,
       config

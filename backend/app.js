@@ -10,10 +10,10 @@ const dotenv = require("dotenv");
 // config
 dotenv.config({ path: "backend/config/config.env" });
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use(cors({ origin: true, credentials: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: 500000, extended: true}));
 app.use(fileUpload());
 //route imports
 const product = require("./routes/productRoute");

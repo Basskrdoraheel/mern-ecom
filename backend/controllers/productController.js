@@ -6,32 +6,38 @@ const cloudinary = require("cloudinary");
 // create product --Admin
 
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
-  let images = [];
-  if (typeof req.body.images === "string") {
-    images.push(req.body.images);
-  } else {
-    images = req.body.images;
-  }
-
-  const imagesLink = [];
-  for (let i = 0; i < images.length; i++) {
-    const result = await cloudinary.v2.uploader.upload(images[i], {
-      folder: "Products",
+  console.log("🚀 ~ file: productController.js:9 ~ exports.createProduct=catchAsyncErrors ~ req:", req.body.name)
+  try {
+    // let images = [];
+    // if (typeof req.body.images === "string") {
+    //   images.push(req.body.images);
+    // } else {
+    //   images = req.body.images;
+    // }
+  
+    const imagesLink = [];
+    // for (let i = 0; i < images.length; i++) {
+    //   const result = await cloudinary.v2.uploader.upload(images[i], {
+    //     folder: "Products",
+    //   });
+    //   images.push({
+    //     public_id: result.public_id,
+    //     url: result.secure_url,
+    //   });
+    // }
+    req.body.user = req.user.id;
+    req.body.images = imagesLink;
+  
+    const product = await productModel.create(req.body);
+  
+    res.status(201).json({
+      success: true,
+      product,
     });
-    images.push({
-      public_id: result.public_id,
-      url: result.secure_url,
-    });
+  } catch (error) {
+    console.log(error);
   }
-  req.body.user = imagesLink;
-  req.body.images = req.user.id;
-
-  const product = await productModel.create(req.body);
-
-  res.status(201).json({
-    success: true,
-    product,
-  });
+ 
 });
 
 // update the product --Admin

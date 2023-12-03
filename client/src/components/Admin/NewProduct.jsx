@@ -50,16 +50,20 @@ const NewProduct = () => {
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();
+    
     const myForm = new FormData();
+    
     myForm.set("name", name);
     myForm.set("price", price);
     myForm.set("category", category);
     myForm.set("description", description);
     myForm.set("stock", stock);
-
+    
     images.forEach((i) => {
       myForm.append("images", i);
     });
+
+    console.log("🚀 ~ file: NewProduct.jsx:62 ~ images.forEach ~ myForm:", myForm)
     dispatch(createProduct(myForm));
   };
 
