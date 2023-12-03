@@ -2,6 +2,13 @@ import {
   ALL_PRODUCT_FAIL,
   ALL_PRODUCT_SUCCESS,
   ALL_PRODUCT_REQUEST,
+  ADMIN_PRODUCT_FAIL,
+  ADMIN_PRODUCT_REQUEST,
+  ADMIN_PRODUCT_SUCCESS,
+  NEW_PRODUCT_REQUEST,
+  NEW_PRODUCT_SUCCESS,
+  NEW_PRODUCT_FAIL,
+  NEW_PRODUCT_RESET,
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_DETAILS_REQUEST,
@@ -38,6 +45,24 @@ export const getProducts =
       });
     }
   };
+// get products by admin
+export const getAdminProduct = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: ADMIN_PRODUCT_REQUEST,
+    });
+    const { data } = await request.get("/api/v1/admin/products");
+    dispatch({
+      type: ADMIN_PRODUCT_SUCCESS,
+      payload: data.products,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_PRODUCT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
 export const getProductDetails = (id) => async (dispatch) => {
   try {
@@ -76,9 +101,36 @@ export const newReview = (reviewData) => async (dispatch) => {
       payload: data.success,
     });
   } catch (error) {
-    console.log("🚀 ~ file: productAction.js:85 ~ newReview ~ error:", error);
     dispatch({
       type: NEW_REVIEW_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// CREATE PRODUCT
+
+export const createProduct = (productData) => async (dispatch) => {
+  try {
+    dispatch({
+      type: NEW_PRODUCT_REQUEST,
+    });
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+
+    const { data } = await request.put(
+      `/api/v1/admin/product/new`,
+      productData,
+      config
+    );
+    dispatch({
+      type: NEW_PRODUCT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: NEW_PRODUCT_FAIL,
       payload: error.response.data.message,
     });
   }
