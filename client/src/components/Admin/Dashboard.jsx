@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./SideBar";
 import MetaData from "../layout/MetaData";
 import "./Dashboard.css";
@@ -6,14 +6,27 @@ import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Doughnut, Line } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
+import { getAdminProduct } from "../../Actions/productAction";
+import { getAllOrders } from "../../Actions/orderAction";
 const Dashboard = () => {
   const dispatch = useDispatch();
-
   const { products } = useSelector((state) => state.products);
 
-  // const { orders } = useSelector((state) => state.allOrders);
+  const { orders } = useSelector((state) => state.allOrders);
 
-  // const { users } = useSelector((state) => state.allUsers);
+  const { users } = useSelector((state) => state.allUsers);
+  let outOfStock = 0;
+  products &&
+    products.forEach((i) => {
+      if (i.stock === 0) {
+        outOfStock += 1;
+      }
+    });
+
+  useEffect(() => {
+    dispatch(getAdminProduct());
+    dispatch(getAllOrders());
+  }, [dispatch]);
 
   return (
     <>
@@ -32,15 +45,15 @@ const Dashboard = () => {
             <div className="dashboardSummaryBox2">
               <Link to={"admin/prdoucts"}>
                 <p>Products</p>
-                <p>50</p>
+                <p>{products && products.length}</p>
               </Link>
               <Link to={"admin/orders"}>
                 <p>Orders</p>
-                <p>4</p>
+                <p>{orders && orders.length}</p>
               </Link>
               <Link to={"admin/users"}>
                 <p>Users</p>
-                <p>2</p>
+                <p>{users && users.length}</p>
               </Link>
             </div>
           </div>

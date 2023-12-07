@@ -3,6 +3,7 @@ import { Rating } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+  // console.log("🚀 ~ file: ProductCard.jsx:6 ~ ProductCard ~ product:", product);
   const options = {
     size: "small",
     value: product.ratings,
@@ -11,7 +12,7 @@ const ProductCard = ({ product }) => {
   };
   return (
     <Link className="productCard" to={`product/${product._id}`}>
-      <img src={product.image[0].url} alt={product.name} />
+      {/* <img src={product.image[0].url} alt={product.name} /> */}
       <p>{product.name}</p>
 
       <div>
